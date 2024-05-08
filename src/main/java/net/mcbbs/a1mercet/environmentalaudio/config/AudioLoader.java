@@ -68,6 +68,7 @@ public class AudioLoader
             Bukkit.getLogger().info("§6§l[Audio]无萌芽与龙核支持 使用原版兼容");
 
         AudioManager.init();
+        reloadArea();
         reloadType();
         reloadState();
 
@@ -101,22 +102,25 @@ public class AudioLoader
             if(cfg.getConfigurationSection("Area")!=null)
                 for(String id: cfg.getConfigurationSection("Area").getKeys(false))
                 {
-                    String name = cfg.getString("Area."+id+".Name");
-                    World world = Bukkit.getWorld(cfg.getString("Area."+id+".World"));
+                    try {
+                        String name = cfg.getString("Area."+id+".Name");
+                        String worldStr = cfg.getString("Area."+id+".World");
+                        World world = worldStr==null?null:Bukkit.getWorld(worldStr);
 
-                    if(world==null){Bukkit.getLogger().severe("[AudioLoader]加载区域配置["+id+"]失败 世界["+cfg.getString("Area."+id+".World")+"不存在");continue;}
+                        if(world==null){Bukkit.getLogger().severe("[AudioLoader]加载区域配置["+id+"]失败 世界["+cfg.getString("Area."+id+".World")+"不存在");continue;}
 
-                    Area area = new Area(id,name);
-                    List<String> locList = cfg.getStringList("Area."+id+".Chunks");
-                    for(String str : locList)
-                    {
-                        String[] split = str.split(" ");
-                        if(split.length!=6){Bukkit.getLogger().warning("[AudioLoader]加载区域配置["+id+"]出错 Location参数长度出错["+ Arrays.toString(split) +"]");continue;}
-                        Location l1 = new Location(world,Double.parseDouble(split[0]),Double.parseDouble(split[1]),Double.parseDouble(split[2]));
-                        Location l2 = new Location(world,Double.parseDouble(split[3]),Double.parseDouble(split[4]),Double.parseDouble(split[5]));
-                        area.addAreaChunk(new AreaChunk(area,l1,l2));
-                    }
-                    AudioManager.putArea(area);
+                        Area area = new Area(id,name);
+                        List<String> locList = cfg.getStringList("Area."+id+".Chunks");
+                        for(String str : locList)
+                        {
+                            String[] split = str.split(" ");
+                            if(split.length!=6){Bukkit.getLogger().warning("[AudioLoader]加载区域配置["+id+"]出错 Location参数长度出错["+ Arrays.toString(split) +"]");continue;}
+                            Location l1 = new Location(world,Double.parseDouble(split[0]),Double.parseDouble(split[1]),Double.parseDouble(split[2]));
+                            Location l2 = new Location(world,Double.parseDouble(split[3]),Double.parseDouble(split[4]),Double.parseDouble(split[5]));
+                            area.addAreaChunk(new AreaChunk(area,l1,l2));
+                        }
+                        AudioManager.putArea(area);
+                    }catch (Exception e){e.printStackTrace();Bukkit.getLogger().severe("Area["+id+"]加载出错");}
                 }
         }
 
@@ -131,10 +135,12 @@ public class AudioLoader
             if(cfg.getConfigurationSection("Audio")!=null)
                 for(String id: cfg.getConfigurationSection("Audio").getKeys(false))
                 {
-                    String name = cfg.getString("Audio."+id+".Name");
-                    AudioType type = AudioType.valueOf(cfg.getString("Audio."+id+".Type"));
-                    Audio a = type.create(id,name);
-                    a.load(cfg.getConfigurationSection("Audio."+id));
+                    try {
+                        String name = cfg.getString("Audio."+id+".Name");
+                        AudioType type = AudioType.valueOf(cfg.getString("Audio."+id+".Type"));
+                        Audio a = type.create(id,name);
+                        a.load(cfg.getConfigurationSection("Audio."+id));
+                    }catch (Exception e){e.printStackTrace();Bukkit.getLogger().severe("Audio["+id+"]加载出错");}
                 }
         }
     }
@@ -148,14 +154,16 @@ public class AudioLoader
             if(cfg.getConfigurationSection("AudioState")!=null)
                 for(String id: cfg.getConfigurationSection("AudioState").getKeys(false))
                 {
-                    Audio audio = AudioManager.getAudio(cfg.getString("AudioState."+id+".Audio"));
-                    if(audio==null){Bukkit.getLogger().severe("[AudioLoader]["+id+"] 音效ID "+cfg.getString("AudioState."+id+".Audio")+" 不存在");continue;}
+                    try {
+                        Audio audio = AudioManager.getAudio(cfg.getString("AudioState."+id+".Audio"));
+                        if(audio==null){Bukkit.getLogger().severe("[AudioLoader]["+id+"] 音效ID "+cfg.getString("AudioState."+id+".Audio")+" 不存在");continue;}
 
-                    String name = cfg.getString("AudioState."+id+".Name");
+                        String name = cfg.getString("AudioState."+id+".Name");
 
-                    AudioState state = audio.createState(id,name==null?audio.name:name);
-                    state.load(cfg.getConfigurationSection("AudioState."+id));
-                    AudioManager.registerAudioState(state);
+                        AudioState state = audio.createState(id,name==null?audio.name:name);
+                        state.load(cfg.getConfigurationSection("AudioState."+id));
+                        AudioManager.registerAudioState(state);
+                    }catch (Exception e){e.printStackTrace();Bukkit.getLogger().severe("AudioState["+id+"]加载出错");}
                 }
         }
     }

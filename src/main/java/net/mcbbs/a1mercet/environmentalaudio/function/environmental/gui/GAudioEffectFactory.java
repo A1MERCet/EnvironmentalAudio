@@ -76,7 +76,8 @@ public class GAudioEffectFactory
         }else {
             map.put((IDebugEffect) new GAudioGermEffectGui(UUID.randomUUID().toString())
                             .setScale(0.125F*data.range).setFollowPitch(true).setFollowYaw(true).setTopRendering(true)
-                            .setOffsetX("0.5").setOffsetY("0.5")
+                            .setOffsetY((data.range/2*-1)+"")
+                            .setOffsetX("0.5").setOffsetZ("0.5")
                             .setGui(new GAudioGermStateGui(state))
                             .setRenderRange(1000F)
                             .setDuration(UtilDate.toMinute(1)+"")

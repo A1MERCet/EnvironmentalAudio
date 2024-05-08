@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class PlayerAudioState
 {
@@ -35,21 +36,25 @@ public class PlayerAudioState
     }
 
     public void processMute(String id) {
-        AudioState state = playing.get(id);
-        if (state == null) return;
-        state.stopBypass(this);
+        List<AudioState> states = new ArrayList<>();
+        for (AudioState s : playing.values())
+            if (s.id.equals(id)||s.audio.id.equals(id)||s.getData().group.equals(id))
+                states.add(s);
+        states.forEach(e->e.stopBypass(this));
     }
 
     public void removeMute(String id) {
-        AudioState state = playing.get(id);
-        if (state == null) return;
-        state.playBypass(this);
+
+        List<AudioState> states = new ArrayList<>();
+        for (AudioState s : playing.values())
+            if (s.id.equals(id)||s.audio.id.equals(id)||s.getData().group.equals(id))
+                states.add(s);
+        states.forEach(e->e.playBypass(this));
     }
 
     public boolean hasExclude(String id) {
-        if (playing.containsKey(id)) return true;
         for (AudioState s : playing.values())
-            if (s.getData().group.equals(id))
+            if (s.id.equals(id)||s.audio.id.equals(id)||s.getData().group.equals(id))
                 return true;
         return false;
     }
