@@ -59,6 +59,10 @@ public class Audio implements IConfig
     public AudioCallback callbackPlay;
     public AudioCallback callbackStop;
 
+    public Audio registerCallbackCheck(AudioCallback c){this.callbackCheck=c;return this;}
+    public Audio registerCallbackPlay(AudioCallback c){this.callbackPlay=c;return this;}
+    public Audio registerCallbackStop(AudioCallback c){this.callbackStop=c;return this;}
+
     public Audio( String id, String name){this(AudioType.DEFAULT,id,name);}
     protected Audio(AudioType type , String id, String name)
     {
