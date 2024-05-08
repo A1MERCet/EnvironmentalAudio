@@ -43,42 +43,45 @@ public class AudioData implements IConfig {
 
     @Override
     public void load(ConfigurationSection section) {
-        group       = section.getString("Group"                         , "master");
-        sound       = section.getString("Sound"                         , "NaN");
-        category    = SoundCategory.valueOf(section.getString("Category", "MASTER"));
-        length      = section.getLong("Length"                          , 1);
-        volume      = (float) section.getDouble("Volume"                , 1F);
-        pitch       = (float) section.getDouble("Pitch"                 , 1F);
-        range       = section.getInt("Range"                            , 8);
-        fadeOut     = section.getInt("FadeOut"                          , 30);
-        fadeIn      = section.getInt("FadeIn"                           , 10);
-        cycleDelay  = section.getLong("CycleDelay"                      , 0);
-        cycleReset  = section.getBoolean("CycleReset"                   , true);
-        enhance     = section.getBoolean("Enhance"                      , true);
-        exclude     = section.getStringList("Exclude");
-        mute        = section.getStringList("Mute");
+        group       = section.getString("Group"                         , group);
+        sound       = section.getString("Sound"                         , sound);
+        category    = SoundCategory.valueOf(section.getString("Category", category.name()));
+        length      = section.getLong("Length"                          , length);
+        cycle       = section.getInt("Cycle"                            , cycle);
+        volume      = (float) section.getDouble("Volume"                , volume);
+        pitch       = (float) section.getDouble("Pitch"                 , pitch);
+        range       = section.getInt("Range"                            , range);
+        fadeOut     = section.getInt("FadeOut"                          , fadeOut);
+        fadeIn      = section.getInt("FadeIn"                           , fadeIn);
+        cycleDelay  = section.getLong("CycleDelay"                      , cycleDelay);
+        cycleReset  = section.getBoolean("CycleReset"                   , cycleReset);
+        enhance     = section.getBoolean("Enhance"                      , enhance);
+        List<String> excludeS                   = section.getStringList("Exclude");
+        List<String> muteS                      = section.getStringList("Mute");
+        if(excludeS.size()>0)   this.exclude    =excludeS;
+        if(muteS.size()>0)      this.mute       =muteS;
     }
 
     public PlayType playType        = PlayType.VANILLA;
     public String group             = Audio.Type.MISC.name;
     protected String sound          = "";
     public SoundCategory category   = SoundCategory.MASTER;
-    public boolean cycle            = true;
+    public int cycle                = -1;
     public boolean cycleReset       = false;
     public long cycleDelay          = 0L;
     public long length              = 1L;
     public float volume             = 1F;
     public float pitch              = 1F;
     public int range                = 10000;
-    public int fadeOut              = 30;
     public int fadeIn               = 30;
+    public int fadeOut              = 30;
     public boolean enhance          = false;
     public List<String> exclude     = new ArrayList<>();
     public List<String> mute        = new ArrayList<>();
 
     @Override
     public String toString() {
-        return "[" + group + "] " + sound+(playType==PlayType.GERM?"[G]":playType==PlayType.DRAGON?"[D]":"") + " " + (cycle ? ("+循环" + (cycleReset?"重设":"")) + cycleDelay : "") + (enhance ? "+增强" : "") + " 音量: " + volume + "/" + pitch + " 范围: " + range + " 排除: " + exclude + " 停止: " + mute;
+        return "[" + group + "] " + sound+(playType==PlayType.GERM?"[G]":playType==PlayType.DRAGON?"[D]":"") + " " + ("循环"+ cycle + " " + (cycleReset?"重设":"") + cycleDelay) + (enhance ? "+增强" : "") + " 音量: " + volume + "/" + pitch + " 范围: " + range + " 排除: " + exclude + " 停止: " + mute;
     }
 
     public AudioData() {
@@ -87,13 +90,18 @@ public class AudioData implements IConfig {
 
     public AudioData copy() {
         AudioData d     = new AudioData();
+        d.playType      = this.playType;
+        d.group         = this.group;
         d.sound         = this.sound;
         d.category      = this.category;
         d.cycle         = this.cycle;
+        d.cycleDelay    = this.cycleDelay;
+        d.cycleReset    = this.cycleReset;
         d.length        = this.length;
         d.volume        = this.volume;
         d.pitch         = this.pitch;
         d.range         = this.range;
+        d.fadeIn        = this.fadeIn;
         d.fadeOut       = this.fadeOut;
         d.enhance       = this.enhance;
         d.exclude       = new ArrayList<>(this.exclude);
@@ -125,7 +133,7 @@ public class AudioData implements IConfig {
         return this;
     }
     public AudioData setCategory(SoundCategory category)    {this.category = category;return this;}
-    public AudioData setCycle(boolean cycle)                {this.cycle = cycle;return this;}
+    public AudioData setCycle(int cycle)                    {this.cycle = cycle;return this;}
     public AudioData setLength(long length)                 {this.length = length;return this;}
     public AudioData setVolume(float volume)                {this.volume = volume;return this;}
     public AudioData setPitch(float pitch)                  {this.pitch = pitch;return this;}

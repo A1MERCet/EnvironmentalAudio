@@ -4,7 +4,6 @@ import net.mcbbs.a1mercet.environmentalaudio.EnvironmentalAudio;
 import net.mcbbs.a1mercet.environmentalaudio.config.IConfig;
 import net.mcbbs.a1mercet.environmentalaudio.event.custom.audio.AudioPlayEvent;
 import net.mcbbs.a1mercet.environmentalaudio.event.custom.audio.AudioStopEvent;
-import net.mcbbs.a1mercet.environmentalaudio.function.AudioType;
 import net.mcbbs.a1mercet.environmentalaudio.function.environmental.audioevent.IAudioEvent;
 import net.mcbbs.a1mercet.environmentalaudio.function.environmental.gui.GAudioEffectFactory;
 import net.mcbbs.a1mercet.environmentalaudio.function.environmental.gui.GAudioManager;
@@ -15,6 +14,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class Audio implements IConfig
@@ -87,9 +87,9 @@ public class Audio implements IConfig
     public AudioCallback callbackPlay;
     public AudioCallback callbackStop;
 
-    public Audio registerCallbackCheck(AudioCallback c){this.callbackCheck=c;return this;}
-    public Audio registerCallbackPlay(AudioCallback c){this.callbackPlay=c;return this;}
-    public Audio registerCallbackStop(AudioCallback c){this.callbackStop=c;return this;}
+    public Audio registerCallbackCheck(AudioCallback c) {this.callbackCheck=c;return this;}
+    public Audio registerCallbackPlay(AudioCallback c)  {this.callbackPlay=c;return this;}
+    public Audio registerCallbackStop(AudioCallback c)  {this.callbackStop=c;return this;}
 
     public Audio(String id, String name){this("DEFAULT",id,name);}
     protected Audio(String type , String id, String name)
@@ -111,6 +111,10 @@ public class Audio implements IConfig
     public Audio addExclude(String id)      {data.exclude.add(id);return this;}
     public Audio addExclude(Type type)      {return addExclude(type.name());}
 
+    public boolean shouldMute(AudioState state , String muteType)
+    {
+        return state.id.equals(muteType)||state.audio.id.equals(muteType)||state.getData().group.equals(muteType);
+    }
 
     public boolean canPlay(PlayerAudioState ps, AudioState state)
     {
@@ -120,6 +124,9 @@ public class Audio implements IConfig
 
         if(!state.isEnable())
             return false;
+
+        if(data.cycle >0 && ps.cycleRounds.getOrDefault(state.id,0)>=data.cycleDelay)return false;
+
         if(data.range > 0 && state.location.distance(ps.player.getLocation()) > data.range)
             return false;
 
@@ -140,26 +147,51 @@ public class Audio implements IConfig
         EnvironmentalAudio.getInstance().getServer().getPluginManager().callEvent(evt);
         if(evt.isCancelled())return false;
 
+        for (IAudioEvent e : playEvent)
+            if(!e.handle(ps,state))
+                return false;
+
         boolean cancelled = !state.getData().cycleReset && state.getData().cycleDelay > 0 && ((System.currentTimeMillis() / 50L * 50L / 50L)) % state.getData().cycleDelay != 0;
 
         AudioManager.debug("[Audio]播放 "+ps.player.getName()+" > "+state.name+"["+state.id+"]");
 
         AudioData data = state.getData();
 
-        for(String s : data.mute)
-            ps.processMute(s);
+        for(String muteType : data.mute)
+        {
+            List<AudioState> states = new ArrayList<>();
+            for (AudioState s : ps.playing.values())
+                if (s.shouldMute(muteType))
+                    states.add(s);
+            states.forEach(e->e.stopBypass(ps));
+        }
 
-        if(!cancelled)playBypass(ps,state);
+        if(!cancelled)
+        {
+            boolean muted = false;
+            for(AudioState playing : ps.playing.values())
+            {
+                boolean next = true;
+                for(String muteType : playing.getData().mute)
+                    if(state.shouldMute(muteType))
+                    {
+                        next = false;
+                        muted = true;
+                        break;
+                    }
+                if(!next)break;
+            }
+            if(!muted) playBypass(ps,state);
+        }
         ps.processPlaying(state);
         state.registerHandler(ps);
-
-        playEvent.forEach(e->e.handle(ps,state));
 
         return true;
     }
     public void playBypass(PlayerAudioState ps, AudioState state)
     {
         GAudioManager.playSound(ps,state);
+        if(AudioManager.options.debug)Bukkit.getLogger().warning("PlayBypass: "+state.name+"["+state.id+"]");
     }
     public boolean stop(PlayerAudioState ps, AudioState state)
     {
@@ -171,25 +203,53 @@ public class Audio implements IConfig
         EnvironmentalAudio.getInstance().getServer().getPluginManager().callEvent(evt);
         if(evt.isCancelled())return false;
 
+        for (IAudioEvent e : stopEvent)
+            if(!e.handle(ps,state))
+                return false;
+
         AudioManager.debug("[Audio]停止 "+ps.player.getName()+" > "+state.name+"["+state.id+"]");
-
-        AudioData data = state.getData();
-
-        for(String s : data.mute)
-            ps.removeMute(s);
 
         stopBypass(ps,state);
         ps.processRemove(state);
         state.removeHandler(ps);
 
-        stopEvent.forEach(e->e.handle(ps,state));
+
+        AudioData data = state.getData();
+
+        for(String muteType : data.mute)
+        {
+            List<AudioState> states = new ArrayList<>();
+            for (AudioState s : ps.playing.values())
+                if (s.shouldMute(muteType))
+                    states.add(s);
+
+            for(Iterator<AudioState> it = states.iterator(); it.hasNext();)
+            {
+                AudioState muted = it.next();
+                for(AudioState playing : ps.playing.values())
+                {
+                    boolean next = true;
+                    for(String muteType2 : playing.getData().mute)
+                        if(muted.shouldMute(muteType2))
+                        {
+                            it.remove();
+                            next=false;
+                            break;
+                        }
+                    if(!next)break;
+                }
+            }
+            states.forEach(e->e.playBypass(ps));
+        }
 
         return true;
     }
 
+
     public void stopBypass(PlayerAudioState ps, AudioState state)
     {
         GAudioManager.stopSound(ps,state);
+        if(AudioManager.options.debug)Bukkit.getLogger().warning("StopBypass: "+state.name+"["+state.id+"]");
     }
 
     public HashMap<IDebugEffect,Location> createDebugEffect(AudioState state)

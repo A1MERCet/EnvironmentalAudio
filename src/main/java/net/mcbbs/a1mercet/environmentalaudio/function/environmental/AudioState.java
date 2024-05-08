@@ -85,6 +85,11 @@ public class AudioState implements IConfig
         this.enable = enable;
     }
 
+    public boolean shouldMute(String muteType)
+    {
+        return audio.shouldMute(this,muteType);
+    }
+
     public boolean stop       (PlayerAudioState ps)  {return audio.stop(ps,this);}
     public void stopBypass    (PlayerAudioState ps)  {audio.stopBypass(ps,this);}
     public boolean play       (PlayerAudioState ps)  {return audio.play(ps,this);}

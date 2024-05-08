@@ -4,7 +4,6 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class PlayerAudioState
 {
@@ -14,6 +13,8 @@ public class PlayerAudioState
     public long moveTickRound                               = 0L;
     protected final HashMap<String, AudioState> playing     = new HashMap<>();
     public final HashMap<String, AudioState> cycle          = new HashMap<>();
+    public final HashMap<String,Integer>     cycleRounds    = new HashMap<>();
+
 
     public PlayerAudioState(Player player) {
         this.player = player;
@@ -25,31 +26,20 @@ public class PlayerAudioState
             state.stop(this);
     }
 
+    public void processCycleRounds(String id , int v)
+    {
+        cycleRounds.put(id, cycleRounds.getOrDefault(id,0)+v);
+    }
+
     public void processPlaying(AudioState state) {
         playing.put(state.id, state);
-        if(state.getData().cycle && (state.getData().cycleDelay>0 || state.getData().enhance)) cycle.put(state.id,state);
+        if(state.getData().cycle!=0 && (state.getData().cycleDelay>0 || state.getData().enhance))
+            cycle.put(state.id,state);
     }
 
     public void processRemove(AudioState state) {
         playing.remove(state.id);
         cycle.remove(state.id);
-    }
-
-    public void processMute(String id) {
-        List<AudioState> states = new ArrayList<>();
-        for (AudioState s : playing.values())
-            if (s.id.equals(id)||s.audio.id.equals(id)||s.getData().group.equals(id))
-                states.add(s);
-        states.forEach(e->e.stopBypass(this));
-    }
-
-    public void removeMute(String id) {
-
-        List<AudioState> states = new ArrayList<>();
-        for (AudioState s : playing.values())
-            if (s.id.equals(id)||s.audio.id.equals(id)||s.getData().group.equals(id))
-                states.add(s);
-        states.forEach(e->e.playBypass(this));
     }
 
     public boolean hasExclude(String id) {

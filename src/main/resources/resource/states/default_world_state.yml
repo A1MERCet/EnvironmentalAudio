@@ -13,7 +13,7 @@ AudioState:
       Type: 主音效组
       Sound: germmod:test
       Category: MASTER
-      Cycle: true
+      Cycle: -1
       CycleDelay: 0
       Length: 0
       Volume: 1

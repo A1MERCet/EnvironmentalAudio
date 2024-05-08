@@ -12,6 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.HashMap;
 
@@ -23,6 +24,16 @@ public class EventAudio implements Listener
     {
         AudioManager.createPlayerState(p);
 
+    }
+
+    @EventHandler
+    public void onTeleport(PlayerTeleportEvent evt)
+    {
+        if(!evt.getFrom().getWorld().equals(evt.getTo().getWorld()))
+        {
+            PlayerAudioState ps = AudioManager.getPlayerState(evt.getPlayer());
+            if(ps!=null) ps.clearAll();
+        }
     }
 
     @EventHandler
@@ -64,7 +75,10 @@ public class EventAudio implements Listener
         {
             AudioData data = state.getData();
             if(ps.moveTick%Math.max(1,data.cycleDelay)==0)
+            {
                 state.playBypass(ps);
+                ps.processCycleRounds(state.id,1);
+            }
         }
 
     }
