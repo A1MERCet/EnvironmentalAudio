@@ -5,6 +5,7 @@ import net.mcbbs.a1mercet.environmentalaudio.config.IConfig;
 import net.mcbbs.a1mercet.environmentalaudio.event.custom.audio.AudioPlayEvent;
 import net.mcbbs.a1mercet.environmentalaudio.event.custom.audio.AudioStopEvent;
 import net.mcbbs.a1mercet.environmentalaudio.function.AudioType;
+import net.mcbbs.a1mercet.environmentalaudio.function.environmental.audioevent.IAudioEvent;
 import net.mcbbs.a1mercet.environmentalaudio.function.environmental.gui.GAudioEffectFactory;
 import net.mcbbs.a1mercet.environmentalaudio.function.environmental.gui.GAudioManager;
 import net.mcbbs.a1mercet.environmentalaudio.function.environmental.gui.IDebugEffect;
@@ -12,7 +13,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Audio implements IConfig
 {
@@ -29,6 +32,10 @@ public class Audio implements IConfig
         section.set("Name"      ,name);
         section.set("Type"      ,type.name());
         data.save(section.createSection(data.getDefaultPath()));
+        for(IAudioEvent e : playEvent)
+            e.save(section.createSection("PlayEvent."+e.getDefaultPath()+"."));
+        for(IAudioEvent e : stopEvent)
+            e.save(section.createSection("StopEvent."+e.getDefaultPath()+"."));
     }
 
     @Override
@@ -36,6 +43,24 @@ public class Audio implements IConfig
         if(section.getConfigurationSection("AudioData")!=null)
             data.load(section.getConfigurationSection("AudioData"));
         else Bukkit.getLogger().severe("[Audio]音效数据未填写(AudioData)");
+
+        if(section.getConfigurationSection("PlayEvent")!=null)
+            for(String id : section.getConfigurationSection("PlayEvent").getKeys(false))
+            {
+                IAudioEvent.EnumAudioEvent type = IAudioEvent.EnumAudioEvent.valueOf(section.getString("PlayEvent."+id+".Type"));
+                IAudioEvent event = type.createInstance(id);
+                event.load(section.getConfigurationSection("PlayEvent."+id+"."));
+                playEvent.add(event);
+            }
+        if(section.getConfigurationSection("StopEvent")!=null)
+            for(String id : section.getConfigurationSection("StopEvent").getKeys(false))
+            {
+                IAudioEvent.EnumAudioEvent type = IAudioEvent.EnumAudioEvent.valueOf(section.getString("StopEvent."+id+".Type"));
+                IAudioEvent event = type.createInstance(id);
+                event.load(section.getConfigurationSection("StopEvent."+id+"."));
+                stopEvent.add(event);
+            }
+
     }
 
     public enum Type
@@ -55,6 +80,9 @@ public class Audio implements IConfig
     public final String name;
     protected boolean allowEnhance  = true;
     public AudioData data           = new AudioData();
+    public List<IAudioEvent> playEvent = new ArrayList<>();
+    public List<IAudioEvent> stopEvent = new ArrayList<>();
+
     public AudioCallback callbackCheck;
     public AudioCallback callbackPlay;
     public AudioCallback callbackStop;
@@ -124,6 +152,9 @@ public class Audio implements IConfig
         if(!cancelled)playBypass(ps,state);
         ps.processPlaying(state);
         state.registerHandler(ps);
+
+        playEvent.forEach(e->e.handle(ps,state));
+
         return true;
     }
     public void playBypass(PlayerAudioState ps, AudioState state)
@@ -150,6 +181,9 @@ public class Audio implements IConfig
         stopBypass(ps,state);
         ps.processRemove(state);
         state.removeHandler(ps);
+
+        stopEvent.forEach(e->e.handle(ps,state));
+
         return true;
     }
 

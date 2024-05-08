@@ -8,6 +8,24 @@ Audio:
     # DEFAULT   默认圆形距离检测范围音效
     # AREA      不规则区域检测音效
     Type: DEFAULT
+    # 播放时执行事件
+    # COMMAND 执行指令
+    PlayEvent:
+      Event1:
+        Type: COMMAND
+        # %player%替换玩家名
+        # %state_id%替换音效状态ID
+        # %state_name%替换音效状态名称
+        Cmd: m %player% Play
+        AsOP: false
+        AsConsole: true
+    # 停止时执行事件
+    StopEvent:
+      Event1:
+        Type: COMMAND
+        Cmd: m %player% Stop
+        AsOP: false
+        AsConsole: true
     AudioData:
       # 设置音效组 多个音效可以设置同个音效组
       Type: 主音效组

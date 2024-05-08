@@ -2,12 +2,14 @@ package net.mcbbs.a1mercet.environmentalaudio.function.environmental.gui;
 
 import com.germ.germplugin.api.GermPacketAPI;
 import com.germ.germplugin.api.SoundType;
-import net.mcbbs.a1mercet.environmentalaudio.function.environmental.AudioArea;
+import com.germ.germplugin.api.dynamic.gui.GermGuiScreen;
+import com.germ.germplugin.api.dynamic.gui.GuiManager;
 import net.mcbbs.a1mercet.environmentalaudio.function.environmental.AudioData;
 import net.mcbbs.a1mercet.environmentalaudio.function.environmental.AudioState;
 import net.mcbbs.a1mercet.environmentalaudio.function.environmental.PlayerAudioState;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 public class GAudioManager
 {
@@ -99,6 +101,21 @@ public class GAudioManager
         //todo
     }
 
+    public static void openGui(Player p , String gui , boolean hud)
+    {
+        if(isGerm())         openGuiGerm(p,gui,hud);
+        else if(isDragon())  openGuiDragon(p,gui,hud);
+    }
+    protected static void openGuiGerm(Player p , String gui , boolean hud)
+    {
+        GermGuiScreen g = GermGuiScreen.getGermGuiScreen(gui);
+        if(hud)g.openHud(p);
+        else   g.openGui(p);
+    }
+    protected static void openGuiDragon(Player p , String gui , boolean hud)
+    {
+        //todo
+    }
 
     public static Location calculateAdjustedSoundCoordinates(Location targetSoundCoordinates, double maxDistance, Location receiverCoordinates, double vanilla) {
         double distance = targetSoundCoordinates.distance(receiverCoordinates);
