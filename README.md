@@ -1,3 +1,5 @@
+暂无龙核兼容实现 需要可以到GAudioManager和GAudioEffectFactory自行实现  
+
 插件加载后并不会保存默认配置文件
 请拷贝插件.jar包里的resource文件夹至配置文件夹
 结构:
