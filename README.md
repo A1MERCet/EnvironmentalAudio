@@ -1,5 +1,5 @@
 演示视频
-
+https://www.bilibili.com/video/BV1d1421B7un/?spm_id_from=333.999.0.0
 pkVQ3E4.md.png
 
 暂无龙核兼容实现 需要可以到GAudioManager和GAudioEffectFactory自行实现  
