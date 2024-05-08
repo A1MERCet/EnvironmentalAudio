@@ -1,0 +1,3 @@
+# 默认读取文件路径
+# 默认当前服务端plugin/EnvironmentalAudio/目录下
+#ConfigPath: "D:/AEstus/config/audio/"

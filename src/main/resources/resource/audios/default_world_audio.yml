@@ -1,0 +1,72 @@
+# 由服务端每次启动时创建
+# 请勿编辑本文件
+
+Audio:
+  default_audio1:
+    Name: 测试音效1
+    # 音效种类
+    # DEFAULT   默认圆形距离检测范围音效
+    # AREA      不规则区域检测音效
+    Type: DEFAULT
+    AudioData:
+      # 设置音效组 多个音效可以设置同个音效组
+      Type: 主音效组
+      # 支持 萌芽音效 龙核音效 
+      # 原版音效minecraft:xxx或modid:xxx
+      # 萌芽音效加前缀"germmod:"
+      # 龙核音效加前缀"dragon:"
+      Sound: test
+      # MASTER MUSIC RECORDS WEATHER BLOCKS HOSTILE NEUTRAL PLAYERS AMBIENT VOICE
+      Category: MASTER
+      # 音效是否循环
+      Cycle: true
+      # 重设循环时间
+      # 启用时 进入音效范围内优先播放音效后再进入循环延迟
+      # 关闭时 是否播放取决于全局延迟 这能距离内使全部玩家都同时播放音效 (如果准备播放时玩家不在区域内 音效不会为该玩家播放)
+      CycleReset: false
+      # 需要能被AudioConfig-Threshold整除的数
+      # 循环延迟(固定每多少毫秒播放一次 比音效长度短可能会造成音效重复播放) 小等于0禁用
+      CycleDelay: 0
+      # 需要能被AudioConfig-Threshold整除的数
+      # 音效长度(秒)(暂无用)
+      Length: 0
+      # 音效量与音高
+      Volume: 1
+      Pitch: 1
+      # 音效触发范围
+      Range: 100
+      # 音效淡出效果(仅支持萌芽)
+      # 开启Enhance后无效
+      FadeOut: 80
+      # 增强效果
+      # 使音效支持3D效果 仅基础音效种类(圆形距离检测)可用
+      # 仅支持单通道的音效文件 双通道没有3D效果
+      # 使用的原版音效播放
+      Enhance: true
+      # 冲突音效 在以下音效播放的时候禁止播放
+      Exclude:
+        - "冲突音效"
+      # 静音音效 播放时静音以下音效
+      Mute:
+        - "将静音的音效"
+  area_audio1:
+    Name: 测试音效1
+    Type: AREA
+    # 使用的区域配置(area/xxx.yml)
+    Area: test_area
+    AudioData:
+      Type: 主音效组
+      Sound: test
+      Category: MASTER
+      Cycle: true
+      Delay: 0
+      Length: 0
+      Volume: 1
+      Pitch: 1
+      Range: 100
+      FadeOut: 80
+      Enhance: true
+      Exclude:
+        - "冲突音效"
+      Mute:
+        - "将静音的音效"

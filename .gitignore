@@ -1,0 +1,10 @@
+/.gradle/
+/.idea/
+/build/
+/gradle/
+/lib/
+/out/
+/.gitignore
+/build.gradle
+/gradle.properties
+/settings.gradle

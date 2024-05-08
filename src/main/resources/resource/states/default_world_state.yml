@@ -1,0 +1,31 @@
+# 由服务端每次启动时创建
+# 请勿编辑本文件
+
+AudioState:
+  world_default_audio1:
+    # 可删除 默认使用音效的配置名(Name)
+    Name: 测试音效1
+    # 指向配置的音效(audio/xxx.yml)
+    Audio: default_audio1
+    Location: world 0 0 0
+    # 可删除 默认音效的配置(AudioData)
+    AudioData:
+      Type: 主音效组
+      Sound: germmod:test
+      Category: MASTER
+      Cycle: true
+      CycleDelay: 0
+      Length: 0
+      Volume: 1
+      Pitch: 1
+      Range: 100
+      FadeOut: 80
+      Enhance: true
+      Exclude: []
+      Mute: []
+  world_area_audio1:
+    # 可删除 默认使用音效的配置名(Name)
+    Name: 测试音效1
+    # 指向配置的音效(audio/xxx.yml)
+    Audio: area_audio1
+    Location: world 0 0 0

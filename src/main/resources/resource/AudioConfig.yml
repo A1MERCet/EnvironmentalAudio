@@ -1,0 +1,12 @@
+# 控制台信息输出
+Debug: true
+# 是否开启检测文件修改后重载配置文件
+EnableFileCheck: true
+# 异步检测
+# 功能暂未完成
+Async: true
+# 当启用TickCheck时 每Threshold个tick 监测一次玩家位置以计算播放音效
+# 当关闭TickCheck时 玩家每移动Threshold个tick 监测一次玩家位置以计算播放音效
+# 所有音效长度 循环延迟设置都需要能整除Threshold 否则音效将会失效
+EnableTickCheck: true
+Threshold: 1
