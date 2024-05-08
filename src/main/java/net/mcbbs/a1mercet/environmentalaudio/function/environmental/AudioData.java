@@ -34,6 +34,7 @@ public class AudioData implements IConfig {
         section.set("Pitch",        pitch);
         section.set("Range",        range);
         section.set("FadeOut",      fadeOut);
+        section.set("FadeIn",       fadeIn);
         section.set("Exclude",      exclude);
         section.set("Mute",         mute);
         section.set("CycleDelay",   cycleDelay);
@@ -42,19 +43,20 @@ public class AudioData implements IConfig {
 
     @Override
     public void load(ConfigurationSection section) {
-        group       = section.getString("Group");
-        sound       = section.getString("Sound");
-        category    = SoundCategory.valueOf(section.getString("Category"));
-        length      = section.getLong("Length");
-        volume      = (float) section.getDouble("Volume");
-        pitch       = (float) section.getDouble("Pitch");
-        range       = section.getInt("Range");
-        fadeOut     = section.getInt("FadeOut");
+        group       = section.getString("Group"                         , "master");
+        sound       = section.getString("Sound"                         , "NaN");
+        category    = SoundCategory.valueOf(section.getString("Category", "MASTER"));
+        length      = section.getLong("Length"                          , 1);
+        volume      = (float) section.getDouble("Volume"                , 1F);
+        pitch       = (float) section.getDouble("Pitch"                 , 1F);
+        range       = section.getInt("Range"                            , 8);
+        fadeOut     = section.getInt("FadeOut"                          , 30);
+        fadeIn      = section.getInt("FadeIn"                           , 10);
+        cycleDelay  = section.getLong("CycleDelay"                      , 0);
+        cycleReset  = section.getBoolean("CycleReset"                   , true);
+        enhance     = section.getBoolean("Enhance"                      , true);
         exclude     = section.getStringList("Exclude");
         mute        = section.getStringList("Mute");
-        cycleDelay  = section.getLong("CycleDelay");
-        cycleReset  = section.getBoolean("CycleReset");
-        enhance     = section.getBoolean("Enhance");
     }
 
     public PlayType playType        = PlayType.VANILLA;
@@ -69,6 +71,7 @@ public class AudioData implements IConfig {
     public float pitch              = 1F;
     public int range                = 10000;
     public int fadeOut              = 30;
+    public int fadeIn               = 30;
     public boolean enhance          = false;
     public List<String> exclude     = new ArrayList<>();
     public List<String> mute        = new ArrayList<>();

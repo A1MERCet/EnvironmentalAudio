@@ -91,7 +91,7 @@ public class Audio implements IConfig
     public Audio registerCallbackPlay(AudioCallback c){this.callbackPlay=c;return this;}
     public Audio registerCallbackStop(AudioCallback c){this.callbackStop=c;return this;}
 
-    public Audio( String id, String name){this("DEFAULT",id,name);}
+    public Audio(String id, String name){this("DEFAULT",id,name);}
     protected Audio(String type , String id, String name)
     {
         this.id = id.replace("germmod:","").replace("dragon:","");

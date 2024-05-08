@@ -76,7 +76,7 @@ public class GAudioManager
             case HOSTILE:   type=SoundType.HOSTILE; break;
             case RECORDS:   type=SoundType.RECORDS; break;
         }
-        GermPacketAPI.playSound(ps.player,data.getSound(), type,0,0,0,0,data.volume,data.pitch,data.cycle);
+        GermPacketAPI.playSound(ps.player,data.getSound(), type,0,0,0,0,data.volume,data.pitch,data.cycle,data.fadeIn);
     }
     protected static void playSoundDragon(PlayerAudioState ps, AudioState state)
     {

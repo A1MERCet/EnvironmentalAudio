@@ -100,6 +100,7 @@ public class CMDAudio extends CMDBase
             if(stateList!=null)
                 for (AudioState s : stateList)
                 {
+                    if(!s.location.getWorld().equals(p.getWorld()))continue;
                     HashMap<IDebugEffect,Location> effects = s.audio.createDebugEffect(s);
                     effects.forEach((k,v)->k.spawnTo(p,v));
                 }
