@@ -115,7 +115,7 @@ public class PlayerAudioValue extends PlaceholderExpansion
     {
         Audio a = AudioManager.getAudio(id);
         if(a==null)return "";
-        return a.type.name();
+        return a.type;
     }
 
     public PlayerAudioState getState(Player p){

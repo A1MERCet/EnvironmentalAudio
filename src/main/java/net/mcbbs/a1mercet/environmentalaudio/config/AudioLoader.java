@@ -137,8 +137,10 @@ public class AudioLoader
                 {
                     try {
                         String name = cfg.getString("Audio."+id+".Name");
-                        AudioType type = AudioType.valueOf(cfg.getString("Audio."+id+".Type"));
-                        Audio a = type.create(id,name);
+
+                        Audio a = AudioType.newInstance(cfg.getString("Audio."+id+".Type") , id , name);
+                        if(a==null){Bukkit.getLogger().severe("[AudioLoader]无["+cfg.getString("Audio."+id+".Type")+"]类型音效");continue;}
+
                         a.load(cfg.getConfigurationSection("Audio."+id));
                     }catch (Exception e){e.printStackTrace();Bukkit.getLogger().severe("Audio["+id+"]加载出错");}
                 }

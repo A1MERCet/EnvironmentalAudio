@@ -28,7 +28,7 @@ public class AudioArea extends Audio
     public AudioArea(String id, String name){this(id,name,new Area("nan","NaN"));}
     public AudioArea(String id, String name,Area area)
     {
-        super(AudioType.AREA,id, name);
+        super("AREA",id, name);
         this.allowEnhance=false;
         this.area=area;
         data.range=-1;
@@ -41,6 +41,4 @@ public class AudioArea extends Audio
         if(!super.canPlay(ps, state))return false;
         return area.inArea(ps.player.getLocation(),state.location.getWorld().getName());
     }
-
-
 }

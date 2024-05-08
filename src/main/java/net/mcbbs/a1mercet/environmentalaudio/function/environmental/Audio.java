@@ -30,7 +30,7 @@ public class Audio implements IConfig
     public void save(ConfigurationSection section) {
         section.set("",null);
         section.set("Name"      ,name);
-        section.set("Type"      ,type.name());
+        section.set("Type"      ,type);
         data.save(section.createSection(data.getDefaultPath()));
         for(IAudioEvent e : playEvent)
             e.save(section.createSection("PlayEvent."+e.getDefaultPath()+"."));
@@ -75,7 +75,7 @@ public class Audio implements IConfig
         public String getName() {return name;}
     }
 
-    public final AudioType type;
+    public final String type;
     public final String id;
     public final String name;
     protected boolean allowEnhance  = true;
@@ -91,8 +91,8 @@ public class Audio implements IConfig
     public Audio registerCallbackPlay(AudioCallback c){this.callbackPlay=c;return this;}
     public Audio registerCallbackStop(AudioCallback c){this.callbackStop=c;return this;}
 
-    public Audio( String id, String name){this(AudioType.DEFAULT,id,name);}
-    protected Audio(AudioType type , String id, String name)
+    public Audio( String id, String name){this("DEFAULT",id,name);}
+    protected Audio(String type , String id, String name)
     {
         this.id = id.replace("germmod:","").replace("dragon:","");
         this.name = name;
