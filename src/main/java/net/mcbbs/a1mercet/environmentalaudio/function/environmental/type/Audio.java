@@ -1,9 +1,12 @@
-package net.mcbbs.a1mercet.environmentalaudio.function.environmental;
+package net.mcbbs.a1mercet.environmentalaudio.function.environmental.type;
 
 import net.mcbbs.a1mercet.environmentalaudio.EnvironmentalAudio;
 import net.mcbbs.a1mercet.environmentalaudio.config.IConfig;
 import net.mcbbs.a1mercet.environmentalaudio.event.custom.audio.AudioPlayEvent;
 import net.mcbbs.a1mercet.environmentalaudio.event.custom.audio.AudioStopEvent;
+import net.mcbbs.a1mercet.environmentalaudio.function.environmental.AudioManager;
+import net.mcbbs.a1mercet.environmentalaudio.function.environmental.AudioState;
+import net.mcbbs.a1mercet.environmentalaudio.function.environmental.PlayerAudioState;
 import net.mcbbs.a1mercet.environmentalaudio.function.environmental.audioevent.IAudioEvent;
 import net.mcbbs.a1mercet.environmentalaudio.function.environmental.gui.GAudioEffectFactory;
 import net.mcbbs.a1mercet.environmentalaudio.function.environmental.gui.GAudioManager;
@@ -97,7 +100,7 @@ public class Audio implements IConfig
         this.id = id.replace("germmod:","").replace("dragon:","");
         this.name = name;
         this.data.setSound(id);
-        this.type=type;
+        this.type = type;
         AudioManager.putAudio(this);
     }
 
@@ -113,7 +116,7 @@ public class Audio implements IConfig
 
     public boolean shouldMute(AudioState state , String muteType)
     {
-        return state.id.equals(muteType)||state.audio.id.equals(muteType)||state.getData().group.equals(muteType);
+        return state.id.equals(muteType)||state.audio.id.equals(muteType)||state.getData().group.equals(muteType)||state.audio.type.equals(muteType);
     }
 
     public boolean canPlay(PlayerAudioState ps, AudioState state)
@@ -151,7 +154,7 @@ public class Audio implements IConfig
             if(!e.handle(ps,state))
                 return false;
 
-        boolean cancelled = !state.getData().cycleReset && state.getData().cycleDelay > 0 && ((System.currentTimeMillis() / 50L * 50L / 50L)) % state.getData().cycleDelay != 0;
+        boolean muted = !state.getData().cycleReset && state.getData().cycleDelay > 0 && ((System.currentTimeMillis() / 50L * 50L / 50L)) % state.getData().cycleDelay != 0;
 
         AudioManager.debug("[Audio]播放 "+ps.player.getName()+" > "+state.name+"["+state.id+"]");
 
@@ -166,9 +169,9 @@ public class Audio implements IConfig
             states.forEach(e->e.stopBypass(ps));
         }
 
-        if(!cancelled)
+        if(!muted)
         {
-            boolean muted = false;
+            boolean play = true;
             for(AudioState playing : ps.playing.values())
             {
                 boolean next = true;
@@ -176,13 +179,14 @@ public class Audio implements IConfig
                     if(state.shouldMute(muteType))
                     {
                         next = false;
-                        muted = true;
+                        play = false;
                         break;
                     }
                 if(!next)break;
             }
-            if(!muted) playBypass(ps,state);
+            if(play) playBypass(ps,state);
         }
+
         ps.processPlaying(state);
         state.registerHandler(ps);
 
@@ -191,7 +195,7 @@ public class Audio implements IConfig
     public void playBypass(PlayerAudioState ps, AudioState state)
     {
         GAudioManager.playSound(ps,state);
-        if(AudioManager.options.debug)Bukkit.getLogger().warning("PlayBypass: "+state.name+"["+state.id+"]");
+        if(AudioManager.options.debug)Bukkit.getLogger().warning("[Audio]PlayBypass: "+state.name+"["+state.id+"]");
     }
     public boolean stop(PlayerAudioState ps, AudioState state)
     {
@@ -249,7 +253,7 @@ public class Audio implements IConfig
     public void stopBypass(PlayerAudioState ps, AudioState state)
     {
         GAudioManager.stopSound(ps,state);
-        if(AudioManager.options.debug)Bukkit.getLogger().warning("StopBypass: "+state.name+"["+state.id+"]");
+        if(AudioManager.options.debug)Bukkit.getLogger().warning("[Audio]StopBypass: "+state.name+"["+state.id+"]");
     }
 
     public HashMap<IDebugEffect,Location> createDebugEffect(AudioState state)
@@ -258,8 +262,8 @@ public class Audio implements IConfig
     }
 
 
-    public AudioState createState(String id, String name, Location loc){return new AudioState(id,name,this,loc);}
-    public AudioState createState(String id, String name){return new AudioState(id,name,this,null);}
-    public AudioState createState(Location loc){return new AudioState(id,name,this,loc);}
-    public boolean isAllowEnhance() {return allowEnhance;}
+    public AudioState createState(String id, String name, Location loc) {return new AudioState(id,name,this,loc);}
+    public AudioState createState(String id, String name)               {return createState(id,name,null);}
+    public AudioState createState(Location loc)                         {return createState(id,name,loc);}
+    public boolean isAllowEnhance()                                     {return allowEnhance;}
 }

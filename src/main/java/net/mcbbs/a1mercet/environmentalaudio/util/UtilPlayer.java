@@ -1,20 +1,35 @@
 package net.mcbbs.a1mercet.environmentalaudio.util;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-public class PlayerHelper
+public class UtilPlayer
 {
 
-    /**
-     * ��ȡһ�������ڵ��������
-     */
+    public static Entity rayTraceEntity(LivingEntity e, double range){
+        Entity target;
+        Iterator<Entity> entities;
+        Location loc = e.getEyeLocation();
+        Vector vec = loc.getDirection().multiply(0.15);
+        while((range-=0.1)>0){
+            entities = loc.getWorld().getNearbyEntities(loc.add(vec), 0.001, 0.001, 0.001).iterator();
+            while(entities.hasNext()){
+                if((target = entities.next()) != e){
+                    return target;
+                }
+            }
+        }
+        return null;
+    }
+
+
     public static List<Player> getAllPlayerInArea(Location location , int areaX , int areaY , int areaZ)
     {
         List<Player> ps = new ArrayList<>();
@@ -25,9 +40,7 @@ public class PlayerHelper
         return ps;
     }
 
-    /**
-     * �ж�һ���������Ƿ������
-     */
+
     public static boolean hasPlayerArea(Location location , int areaX , int areaY , int areaZ)
     {
         return getAllPlayerInArea(location,areaX,areaY,areaZ).size()>0;
@@ -37,12 +50,7 @@ public class PlayerHelper
         return hasPlayerArea(location,area,area,area);
     }
 
-    /**
-     * @param p player's location
-     * @param l1 location 1
-     * @param l2 location 2
-     * @return Where the player is between l1 and l2
-     */
+
     public static boolean inAreaIgnoreWorld(Location p, Location l1 , Location l2) {
         int x1 = l1.getBlockX() , y1 = l1.getBlockY() , z1 = l1.getBlockZ();
         int x2 = l2.getBlockX() , y2 = l2.getBlockY() , z2 = l2.getBlockZ();

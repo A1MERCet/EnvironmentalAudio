@@ -11,7 +11,6 @@ public class GAudioGermEffectEntity extends GermEffectEntity implements IDebugEf
 
     public GAudioGermEffectEntity(String effectName) {
         super(effectName);
-        setDuration(UtilDate.toMinute(1)+"");
     }
 
     @Override public void spawnTo(Player p, Location l) {spawnToLocation(p,l);}

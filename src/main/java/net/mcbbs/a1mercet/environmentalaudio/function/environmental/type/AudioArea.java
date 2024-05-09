@@ -1,6 +1,8 @@
-package net.mcbbs.a1mercet.environmentalaudio.function.environmental;
+package net.mcbbs.a1mercet.environmentalaudio.function.environmental.type;
 
-import net.mcbbs.a1mercet.environmentalaudio.function.AudioType;
+import net.mcbbs.a1mercet.environmentalaudio.function.environmental.AudioManager;
+import net.mcbbs.a1mercet.environmentalaudio.function.environmental.AudioState;
+import net.mcbbs.a1mercet.environmentalaudio.function.environmental.PlayerAudioState;
 import net.mcbbs.a1mercet.environmentalaudio.function.area.Area;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;

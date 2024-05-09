@@ -1,29 +1,80 @@
 package net.mcbbs.a1mercet.environmentalaudio.event;
 
-import net.mcbbs.a1mercet.environmentalaudio.function.environmental.AudioData;
+import net.mcbbs.a1mercet.environmentalaudio.config.AudioLoader;
+import net.mcbbs.a1mercet.environmentalaudio.function.environmental.type.AudioData;
 import net.mcbbs.a1mercet.environmentalaudio.function.environmental.AudioManager;
 import net.mcbbs.a1mercet.environmentalaudio.function.environmental.AudioState;
 import net.mcbbs.a1mercet.environmentalaudio.function.environmental.PlayerAudioState;
+import net.mcbbs.a1mercet.environmentalaudio.function.environmental.type.AudioEntity;
+import net.mcbbs.a1mercet.environmentalaudio.function.environmental.type.AudioType;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.server.PluginEnableEvent;
+import org.bukkit.plugin.Plugin;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class EventAudio implements Listener
 {
     public static AudioManager.AudioOptions options = AudioManager.options;
 
-    public static void onJoinHandle(Player p)
+    @EventHandler
+    public void onPluginEnable(PluginEnableEvent evt)
     {
-        AudioManager.createPlayerState(p);
+        boolean reload = true;
 
+        if(AudioType.registerPlugins.containsKey(evt.getPlugin()))
+            AudioType.registerPlugins.put(evt.getPlugin(),true);
+
+        for(Plugin plugin : new ArrayList<>(AudioType.registerPlugins.keySet()))
+            if(!AudioType.registerPlugins.getOrDefault(plugin,false))
+                reload = false;
+        if(reload) AudioLoader.reload();
+    }
+
+    @EventHandler
+    public void onEntitySpawn(EntitySpawnEvent evt)
+    {
+        String spawnName = evt.getEntity().getName();
+        String spawnUUID = evt.getEntity().getUniqueId().toString();
+
+        for(AudioState state : AudioManager.getRegisterStatesID().values())
+            if(state instanceof AudioEntity.AudioStateEntity)
+            {
+                String e = ((AudioEntity.AudioStateEntity) state).entity;
+                if(spawnUUID.equals(e) || spawnName.equals(e))
+                    ((AudioEntity.AudioStateEntity) state).setEntity(evt.getEntity());
+            }
+
+    }
+
+    @EventHandler
+    public void onEntityDeath(EntityDeathEvent evt)
+    {
+        if(!(evt.getEntity() instanceof Player))
+        {
+            String deathName = evt.getEntity().getName();
+            String deathUUID = evt.getEntity().getUniqueId().toString();
+
+            for(AudioState state : AudioManager.getRegisterStatesID().values())
+                if(state instanceof AudioEntity.AudioStateEntity)
+                {
+                    String e = ((AudioEntity.AudioStateEntity) state).entity;
+                    if(deathUUID.equals(e) || deathName.equals(e))
+                        ((AudioEntity.AudioStateEntity) state).setEntity(null);
+                }
+
+        }
     }
 
     @EventHandler
@@ -36,16 +87,43 @@ public class EventAudio implements Listener
         }
     }
 
+    public static void onJoinHandle(Player p)
+    {
+        AudioManager.createPlayerState(p);
+    }
+
     @EventHandler
     public void onJoin(PlayerJoinEvent evt)
     {
+        Player p = evt.getPlayer();
+
         onJoinHandle(evt.getPlayer());
+
+        try {
+
+            for(AudioState state : AudioManager.getRegisterStatesID().values())
+                if(state instanceof AudioEntity.AudioStateEntity)
+                    if(("player@"+evt.getPlayer().getName()).equals(((AudioEntity)state.audio).entity))
+                        ((AudioEntity.AudioStateEntity) state).setEntity(p);
+
+        }catch (Exception e){e.printStackTrace();}
     }
+
 
     @EventHandler
     public void onQuit(PlayerQuitEvent evt)
     {
         Player p = evt.getPlayer();
+
+        try {
+
+            for(AudioState state : AudioManager.getRegisterStatesID().values())
+                if(state instanceof AudioEntity.AudioStateEntity)
+                    if(("player@"+evt.getPlayer().getName()).equals(((AudioEntity)state.audio).entity))
+                        ((AudioEntity.AudioStateEntity) state).setEntity(null);
+
+        }catch (Exception e){e.printStackTrace();}
+
         AudioManager.removePlayerState(p);
     }
 

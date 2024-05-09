@@ -1,4 +1,4 @@
-package net.mcbbs.a1mercet.environmentalaudio.function.environmental;
+package net.mcbbs.a1mercet.environmentalaudio.function.environmental.type;
 
 import net.mcbbs.a1mercet.environmentalaudio.config.IConfig;
 import org.bukkit.SoundCategory;
@@ -29,16 +29,16 @@ public class AudioData implements IConfig {
         section.set("Category",     category.name());
         section.set("Cycle",        cycle);
         section.set("CycleReset",   cycleReset);
+        section.set("CycleDelay",   cycleDelay);
         section.set("Length",       length);
         section.set("Volume",       volume);
         section.set("Pitch",        pitch);
         section.set("Range",        range);
         section.set("FadeOut",      fadeOut);
         section.set("FadeIn",       fadeIn);
+        section.set("Enhance",      enhance);
         section.set("Exclude",      exclude);
         section.set("Mute",         mute);
-        section.set("CycleDelay",   cycleDelay);
-        section.set("Enhance",      enhance);
     }
 
     @Override
@@ -58,8 +58,8 @@ public class AudioData implements IConfig {
         enhance     = section.getBoolean("Enhance"                      , enhance);
         List<String> excludeS                   = section.getStringList("Exclude");
         List<String> muteS                      = section.getStringList("Mute");
-        if(excludeS.size()>0)   this.exclude    =excludeS;
-        if(muteS.size()>0)      this.mute       =muteS;
+        if(excludeS.size()>0)   this.exclude    = excludeS;
+        if(muteS.size()>0)      this.mute       = muteS;
     }
 
     public PlayType playType        = PlayType.VANILLA;
@@ -105,7 +105,7 @@ public class AudioData implements IConfig {
         d.fadeOut       = this.fadeOut;
         d.enhance       = this.enhance;
         d.exclude       = new ArrayList<>(this.exclude);
-        d.mute          = new ArrayList<>(this.exclude);
+        d.mute          = new ArrayList<>(this.mute);
         return d;
     }
 

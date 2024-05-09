@@ -1,10 +1,10 @@
 package net.mcbbs.a1mercet.environmentalaudio.config;
 
 import net.mcbbs.a1mercet.environmentalaudio.EnvironmentalAudio;
-import net.mcbbs.a1mercet.environmentalaudio.function.AudioType;
+import net.mcbbs.a1mercet.environmentalaudio.function.environmental.type.AudioType;
 import net.mcbbs.a1mercet.environmentalaudio.function.area.Area;
 import net.mcbbs.a1mercet.environmentalaudio.function.area.AreaChunk;
-import net.mcbbs.a1mercet.environmentalaudio.function.environmental.Audio;
+import net.mcbbs.a1mercet.environmentalaudio.function.environmental.type.Audio;
 import net.mcbbs.a1mercet.environmentalaudio.function.environmental.AudioManager;
 import net.mcbbs.a1mercet.environmentalaudio.function.environmental.AudioState;
 import net.mcbbs.a1mercet.environmentalaudio.function.environmental.PlayerAudioState;

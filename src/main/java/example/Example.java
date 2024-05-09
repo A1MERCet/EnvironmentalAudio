@@ -1,7 +1,7 @@
 package example;
 
-import net.mcbbs.a1mercet.environmentalaudio.function.environmental.Audio;
-import net.mcbbs.a1mercet.environmentalaudio.function.environmental.AudioData;
+import net.mcbbs.a1mercet.environmentalaudio.function.environmental.type.Audio;
+import net.mcbbs.a1mercet.environmentalaudio.function.environmental.type.AudioData;
 import net.mcbbs.a1mercet.environmentalaudio.function.environmental.AudioManager;
 import net.mcbbs.a1mercet.environmentalaudio.function.environmental.AudioState;
 import org.bukkit.Bukkit;

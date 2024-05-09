@@ -1,6 +1,6 @@
 name: EnvironmentalAudio
 main: net.mcbbs.a1mercet.environmentalaudio.EnvironmentalAudio
-version: 1.3
+version: 1.4
 author: A1MERCet
 depend:
   - PlaceholderAPI

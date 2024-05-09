@@ -7,6 +7,7 @@ Audio:
     # 音效种类
     # DEFAULT   默认圆形距离检测范围音效
     # AREA      不规则区域检测音效
+    # ENTITY    绑定实体坐标的范围检测音效
     Type: DEFAULT
     # 播放时执行事件
     # COMMAND 执行指令
@@ -54,9 +55,10 @@ Audio:
       Pitch: 1
       # 音效触发范围
       Range: 100
-      # 音效淡出效果(仅支持萌芽)
-      # 开启Enhance后无效
-      FadeOut: 80
+      # 音效淡入淡出效果(仅支持萌芽)
+      # 与Enhance冲突
+      FadeIn: 10
+      FadeOut: 20
       # 增强效果
       # 使音效支持3D效果 仅基础音效种类(圆形距离检测)可用
       # 仅支持单通道的音效文件 双通道没有3D效果
@@ -69,7 +71,7 @@ Audio:
       Mute:
         - "将静音的音效"
   area_audio1:
-    Name: 测试音效1
+    Name: 测试音效2
     Type: AREA
     # 使用的区域配置(area/xxx.yml)
     Area: test_area
@@ -83,7 +85,35 @@ Audio:
       Volume: 1
       Pitch: 1
       Range: 100
-      FadeOut: 80
+      FadeIn: 10
+      FadeOut: 20
+      Enhance: true
+      Exclude:
+        - "冲突音效"
+      Mute:
+        - "将静音的音效"
+  area_entity:
+    Name: 测试音效3
+    Type: ENTITY
+    # 默认实体的UUID或玩家名
+    # 设置玩家需要在玩家名前面加上player@ [player@player_name]
+    # 通过指令绑定状态的实体
+    # 指定实体   /audio bind [状态ID] [UUID/玩家名]
+    # 准星处实体 /audio bind [状态ID]
+    # 取消绑定  /audio unbind [状态ID]
+    Entity: UUID
+    AudioData:
+      Type: 主音效组
+      Sound: test
+      Category: MASTER
+      Cycle: true
+      Delay: 0
+      Length: 0
+      Volume: 1
+      Pitch: 1
+      Range: 100
+      FadeIn: 10
+      FadeOut: 20
       Enhance: true
       Exclude:
         - "冲突音效"

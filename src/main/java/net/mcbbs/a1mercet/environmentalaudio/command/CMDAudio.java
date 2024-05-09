@@ -5,14 +5,20 @@ import net.mcbbs.a1mercet.environmentalaudio.config.AudioLoader;
 import net.mcbbs.a1mercet.environmentalaudio.event.custom.audio.AudioReloadEvent;
 import net.mcbbs.a1mercet.environmentalaudio.function.environmental.*;
 import net.mcbbs.a1mercet.environmentalaudio.function.environmental.gui.IDebugEffect;
+import net.mcbbs.a1mercet.environmentalaudio.function.environmental.type.Audio;
+import net.mcbbs.a1mercet.environmentalaudio.function.environmental.type.AudioData;
+import net.mcbbs.a1mercet.environmentalaudio.function.environmental.type.AudioEntity;
+import net.mcbbs.a1mercet.environmentalaudio.util.UtilPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 
 public class CMDAudio extends CMDBase
@@ -84,6 +90,63 @@ public class CMDAudio extends CMDBase
         }
     }
 
+    @CommandArgs(
+            describe   = "绑定准星实体至音效状态",
+            args       = {"bind","状态ID"} ,
+            types      = {ArgType.DEPEND,ArgType.STRING},
+            playerOnly = true
+    )
+    public void bind(CommandSender sender,String state)
+    {
+        AudioState audioState = AudioManager.getRegisterState(state);
+        if(audioState==null){sender.sendMessage("音效状态["+state+"]不存在");return;}
+        if(!(audioState instanceof AudioEntity.AudioStateEntity)){
+            sender.sendMessage("音效状态["+state+"]类型错误["+audioState.audio.type+"]");
+            return;
+        }
+        Entity entity = UtilPlayer.rayTraceEntity((Player)sender,16D);
+        if(entity==null) {sender.sendMessage("准星处无实体");return;}
+
+        ((AudioEntity.AudioStateEntity)audioState).setEntity(entity);
+        sender.sendMessage("成功绑定实体["+entity.getName()+" "+entity.getUniqueId().toString()+"]至"+audioState.id+"["+audioState.name+"]");
+    }
+
+    @CommandArgs(
+            describe   = "绑定实体至音效状态",
+            args       = {"bind","状态ID","UUID/玩家"} ,
+            types      = {ArgType.DEPEND,ArgType.STRING,ArgType.STRING}
+    )
+    public void bind(CommandSender sender,String state , String id)
+    {
+        AudioState audioState = AudioManager.getRegisterState(state);
+        if(audioState==null){sender.sendMessage("音效状态["+state+"]不存在");return;}
+        if(!(audioState instanceof AudioEntity.AudioStateEntity)){
+            sender.sendMessage("音效状态["+state+"]类型错误["+audioState.audio.type+"]");
+            return;
+        }
+
+        Entity entity = Bukkit.getPlayer(id);
+        if(entity==null) entity = Bukkit.getEntity(UUID.fromString(id));
+
+        ((AudioEntity.AudioStateEntity)audioState).setEntity(entity);
+    }
+
+    @CommandArgs(
+            describe   = "取消绑定实体至音效状态",
+            args       = {"unbind","状态ID"} ,
+            types      = {ArgType.DEPEND,ArgType.STRING}
+    )
+    public void unbind(CommandSender sender,String state)
+    {
+        AudioState audioState = AudioManager.getRegisterState(state);
+        if(audioState==null){sender.sendMessage("音效状态["+state+"]不存在");return;}
+        if(!(audioState instanceof AudioEntity.AudioStateEntity)){
+            sender.sendMessage("音效状态["+state+"]类型错误["+audioState.audio.type+"]");
+            return;
+        }
+
+        ((AudioEntity.AudioStateEntity)audioState).setEntity(null);
+    }
 
     @CommandArgs(
             describe   = "显示全部已注册的音效",
@@ -271,7 +334,7 @@ public class CMDAudio extends CMDBase
         if(playState==null){sender.sendMessage("玩家状态不存在["+player+"]");return;}
 
         StringBuilder builder = new StringBuilder();
-        playState.getPlaying().values().forEach(e->builder.append(e.name).append("[").append(e.id).append("]\n"));
+        playState.playing.values().forEach(e->builder.append(e.name).append("[").append(e.id).append("]\n"));
 
         sender.sendMessage(builder.toString());
 

@@ -1,7 +1,7 @@
 package net.mcbbs.a1mercet.environmentalaudio.function.papi;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import net.mcbbs.a1mercet.environmentalaudio.function.environmental.Audio;
+import net.mcbbs.a1mercet.environmentalaudio.function.environmental.type.Audio;
 import net.mcbbs.a1mercet.environmentalaudio.function.environmental.AudioManager;
 import net.mcbbs.a1mercet.environmentalaudio.function.environmental.AudioState;
 import net.mcbbs.a1mercet.environmentalaudio.function.environmental.PlayerAudioState;
@@ -126,7 +126,7 @@ public class PlayerAudioValue extends PlaceholderExpansion
 
     public boolean isAudioPlaying(PlayerAudioState ps, String id)
     {
-        for(AudioState state : ps.getPlaying().values())
+        for(AudioState state : ps.playing.values())
             if(state.audio.id.equals(id))
                 return true;
         return false;
@@ -134,7 +134,7 @@ public class PlayerAudioValue extends PlaceholderExpansion
 
     public boolean isTypePlaying(PlayerAudioState ps, String id)
     {
-        for(AudioState state : ps.getPlaying().values())
+        for(AudioState state : ps.playing.values())
             if(state.audio.data.group.equals(id))
                 return true;
         return false;
@@ -147,13 +147,13 @@ public class PlayerAudioValue extends PlaceholderExpansion
 
     public int getPlayListSize(PlayerAudioState ps)
     {
-        return ps.getPlaying().keySet().size();
+        return ps.playing.keySet().size();
     }
 
     public String getPlayList(PlayerAudioState ps,String split)
     {
         StringBuilder b = new StringBuilder();
-        ps.getPlaying().keySet().forEach(e->b.append(e).append(split));
+        ps.playing.keySet().forEach(e->b.append(e).append(split));
         return b.toString();
     }
 }

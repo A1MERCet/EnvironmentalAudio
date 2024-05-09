@@ -2,6 +2,8 @@ package net.mcbbs.a1mercet.environmentalaudio.function.environmental;
 
 import net.mcbbs.a1mercet.environmentalaudio.config.IConfig;
 import net.mcbbs.a1mercet.environmentalaudio.event.EventAudio;
+import net.mcbbs.a1mercet.environmentalaudio.function.environmental.type.Audio;
+import net.mcbbs.a1mercet.environmentalaudio.function.environmental.type.AudioData;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -26,10 +28,7 @@ public class AudioState implements IConfig
         String[] locationString = section.getString("Location").split(" ");
         location = new Location(Bukkit.getWorld(locationString[0]),Double.parseDouble(locationString[1]),Double.parseDouble(locationString[2]),Double.parseDouble(locationString[3]));
         if(section.getConfigurationSection("AudioData")!=null)
-        {
-            data = audio.data.copy();
             data.load(section.getConfigurationSection("AudioData"));
-        }
     }
 
     public final String id;
@@ -47,10 +46,11 @@ public class AudioState implements IConfig
     public AudioState(String id,String name,Audio audio) {this(id,name,audio,null);}
     public AudioState(String id,String name,Audio audio, Location location)
     {
-        this.id=id;
-        this.name=name;
-        this.audio = audio;
-        this.location = location;
+        this.id         = id;
+        this.name       = name;
+        this.audio      = audio;
+        this.location   = location;
+        this.data       = audio.data.copy();
     }
 
     public AudioState setField(String name , Object o)
@@ -70,7 +70,7 @@ public class AudioState implements IConfig
     public AudioState copy(String id)
     {
         AudioState a = audio.createState(id,name,new Location(location.getWorld(),location.getX(),location.getY(),location.getZ()));
-        if(data!=null)a.data=data.copy();
+        if(data!=null) a.data=data.copy();
         return a;
     }
 

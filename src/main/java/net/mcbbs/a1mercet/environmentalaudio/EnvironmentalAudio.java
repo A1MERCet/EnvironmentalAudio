@@ -32,8 +32,6 @@ public final class EnvironmentalAudio extends JavaPlugin {
 
         Bukkit.getPluginCommand("audio").setExecutor(new CMDAudio());
 
-        AudioLoader.reload();
-
         for(Player p : Bukkit.getOnlinePlayers())
             EventAudio.onJoinHandle(p);
     }
@@ -42,7 +40,7 @@ public final class EnvironmentalAudio extends JavaPlugin {
     public void onDisable()
     {
         for(PlayerAudioState s : AudioManager.getPlayerStates().values())
-            new ArrayList<>(s.getPlaying().values()).forEach(e->e.stop(s));
+            new ArrayList<>(s.playing.values()).forEach(e->e.stop(s));
         if(AudioManager.options.tickHandler!=null)
             AudioManager.options.tickHandler.cancel();
     }

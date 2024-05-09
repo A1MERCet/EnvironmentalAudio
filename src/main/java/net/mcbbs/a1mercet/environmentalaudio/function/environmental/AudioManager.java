@@ -4,6 +4,8 @@ import net.mcbbs.a1mercet.environmentalaudio.EnvironmentalAudio;
 import net.mcbbs.a1mercet.environmentalaudio.config.AudioLoader;
 import net.mcbbs.a1mercet.environmentalaudio.event.EventAudio;
 import net.mcbbs.a1mercet.environmentalaudio.function.area.Area;
+import net.mcbbs.a1mercet.environmentalaudio.function.environmental.type.Audio;
+import net.mcbbs.a1mercet.environmentalaudio.function.environmental.type.AudioEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -42,16 +44,24 @@ public class AudioManager
     {
         @Override
         public void run() {
-            for(PlayerAudioState s : AudioManager.getPlayerStates().values())
-            {
-                try {
-                    if(s.moveTick>=Long.MAX_VALUE-1L-options.threshold){s.moveTick=0L;s.moveTickRound++;}
-                    s.moveTick += options.threshold;
-                    EventAudio.checkPlayers();
-                }catch (Exception e){e.printStackTrace();}
 
+            if(options.enableTickCheck)
+            {
+                for(PlayerAudioState s : AudioManager.getPlayerStates().values())
+                {
+                    try {
+                        if(s.moveTick>=Long.MAX_VALUE-1L-options.threshold){s.moveTick=0L;s.moveTickRound++;}
+                        s.moveTick += options.threshold;
+                        EventAudio.checkPlayers();
+                    }catch (Exception e){e.printStackTrace();}
+
+                }
+                checkFileModify();
             }
-            checkFileModify();
+
+            for(AudioState state : AudioManager.registerStatesID.values())
+                if(state instanceof AudioEntity.AudioStateEntity)
+                    ((AudioEntity.AudioStateEntity) state).resetLocation();
         }
 
         public void checkFileModify()
@@ -118,7 +128,7 @@ public class AudioManager
     {
         initDefaultAudio();
         if(options.tickHandler!=null)   options.tickHandler.cancel();
-        if(options.enableTickCheck)     options.tickHandler = new TickHandler().runTaskTimer(EnvironmentalAudio.getInstance(),0,options.threshold);
+        options.tickHandler = new TickHandler().runTaskTimer(EnvironmentalAudio.getInstance(),0,options.threshold);
     }
 
     public static HashMap<String,PlayerAudioState> getPlayerStates(){return playerStates;}

@@ -11,7 +11,7 @@ public class PlayerAudioState
     public final Player player;
     public long moveTick                                    = 0L;
     public long moveTickRound                               = 0L;
-    protected final HashMap<String, AudioState> playing     = new HashMap<>();
+    public final HashMap<String, AudioState> playing        = new HashMap<>();
     public final HashMap<String, AudioState> cycle          = new HashMap<>();
     public final HashMap<String,Integer>     cycleRounds    = new HashMap<>();
 
@@ -42,9 +42,9 @@ public class PlayerAudioState
         cycle.remove(state.id);
     }
 
-    public boolean hasExclude(String id) {
+    public boolean hasExclude(String excludeType) {
         for (AudioState s : playing.values())
-            if (s.id.equals(id)||s.audio.id.equals(id)||s.getData().group.equals(id))
+            if (s.id.equals(excludeType)||s.audio.id.equals(excludeType)||s.getData().group.equals(excludeType)||s.audio.type.equals(excludeType))
                 return true;
         return false;
     }
@@ -55,7 +55,5 @@ public class PlayerAudioState
     public boolean isPlaying(String id)             {return playing.containsKey(id);}
     public boolean play(AudioState state)           {return state.play(this);}
     public boolean stop(AudioState state)           {return state.stop(this);}
-    public boolean stop(String id)                  {
-        AudioState s = playing.get(id);if (s != null) return s.stop(this);return true;}
-    public HashMap<String, AudioState> getPlaying() {return playing;}
+    public boolean stop(String id)                  {AudioState s = playing.get(id);if (s != null) return s.stop(this);return true;}
 }
