@@ -70,7 +70,7 @@ public class AudioState implements IConfig
     public AudioState copy(String id)
     {
         AudioState a = audio.createState(id,name,new Location(location.getWorld(),location.getX(),location.getY(),location.getZ()));
-        if(data!=null) a.data=data.copy();
+        a.data       = data.copy();
         return a;
     }
 

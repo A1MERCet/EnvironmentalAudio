@@ -51,25 +51,27 @@ public class GAudioEffectFactory
                                 .setGui(new GAudioGermStateGui(state))
                                 .setRenderRange(1000F)
                                 .setDuration(UtilDate.toMinute(1)+"")
-                        ,chunk.l1);
+                        ,new Location(state.location.getWorld(),chunk.l1.getX(),chunk.l1.getY(),chunk.l1.getZ()));
                 map.put((IDebugEffect) new GAudioGermEffectGui(UUID.randomUUID().toString())
                                 .setScale(0.125F).setFollowPitch(true).setFollowYaw(true).setTopRendering(true)
                                 .setGui(new GAudioGermStateGui(state))
                                 .setRenderRange(1000F)
                                 .setDuration(UtilDate.toMinute(1)+"")
-                        ,chunk.l2);
+                        ,new Location(state.location.getWorld(),chunk.l2.getX(),chunk.l2.getY(),chunk.l2.getZ()));
                 map.put((IDebugEffect) new GAudioGermEffectEntity(UUID.randomUUID().toString())
                         .setYaw("0").setPitch("0").setRoll("0")
                         .setModel("pig").setName("audio_box").setDuration(UtilDate.toMinute(1)+"")
                         .setFollowPitch(false).setFollowYaw(false)
                         .setFollowBindX(false).setFollowBindY(false).setFollowBindZ(false)
-                        .setRenderRange(1000F),chunk.l1);
+                        .setRenderRange(1000F)
+                        ,new Location(state.location.getWorld(),chunk.l1.getX(),chunk.l1.getY(),chunk.l1.getZ()));
                 map.put((IDebugEffect) new GAudioGermEffectEntity(UUID.randomUUID().toString())
                         .setYaw("0").setPitch("0").setRoll("0")
                         .setModel("pig").setName("audio_box").setDuration(UtilDate.toMinute(1)+"")
                         .setFollowPitch(false).setFollowYaw(false)
                         .setFollowBindX(false).setFollowBindY(false).setFollowBindZ(false)
-                        .setRenderRange(1000F),chunk.l2)
+                        .setRenderRange(1000F)
+                        ,new Location(state.location.getWorld(),chunk.l2.getX(),chunk.l2.getY(),chunk.l2.getZ()));
                 ;
             }
 

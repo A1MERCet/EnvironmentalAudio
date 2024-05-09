@@ -22,7 +22,7 @@ public class AudioArea extends Audio
         area = AudioManager.getArea(section.getString("Area"));
         if(area==null) {
             Bukkit.getLogger().severe("["+id+"] 加载区域 "+section.getString("Area")+" 不存在");
-            area=new Area(id,name);
+            setArea(new Area(id,name));
         }
     }
 
@@ -40,7 +40,7 @@ public class AudioArea extends Audio
 
     @Override
     public boolean canPlay(PlayerAudioState ps, AudioState state) {
-        if(!super.canPlay(ps, state))return false;
-        return area.inArea(ps.player.getLocation(),state.location.getWorld().getName());
+
+        return  ps.player.getWorld().getName().equals(state.location.getWorld().getName()) && area.inArea(ps.player.getLocation()) && super.canPlay(ps, state);
     }
 }

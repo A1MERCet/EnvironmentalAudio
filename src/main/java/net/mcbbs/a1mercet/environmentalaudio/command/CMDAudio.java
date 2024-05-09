@@ -165,7 +165,9 @@ public class CMDAudio extends CMDBase
                 {
                     if(!s.location.getWorld().equals(p.getWorld()))continue;
                     HashMap<IDebugEffect,Location> effects = s.audio.createDebugEffect(s);
-                    effects.forEach((k,v)->k.spawnTo(p,v));
+                    try {
+                        effects.forEach((k,v)->k.spawnTo(p,v));
+                    }catch (Exception e){e.printStackTrace();Bukkit.getLogger().severe("生成DebugEffect出错 "+s.name+"["+s.id+"]");}
                 }
         }
 
@@ -277,6 +279,7 @@ public class CMDAudio extends CMDBase
             for(AudioState state : states)
             {
                 AudioState copy = state.copy(target+"_"+state.id);
+                copy.location   = new Location(targetWorld,state.location.getX(),state.location.getY(),state.location.getZ());
                 AudioManager.registerAudioState(copy);
             }
         sender.sendMessage("拷贝世界音效状态["+source+"]至["+target+"]成功");

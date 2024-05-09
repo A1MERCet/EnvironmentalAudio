@@ -29,6 +29,7 @@ Audio:
         AsConsole: true
     AudioData:
       # 设置音效组 多个音效可以设置同个音效组
+      # 支持选填
       Type: 主音效组
       # 支持 萌芽音效 龙核音效 
       # 原版音效minecraft:xxx或modid:xxx
@@ -36,33 +37,45 @@ Audio:
       # 龙核音效加前缀"dragon:"
       Sound: test
       # MASTER MUSIC RECORDS WEATHER BLOCKS HOSTILE NEUTRAL PLAYERS AMBIENT VOICE
+      # 默认 MASTER
       Category: MASTER
       # 循环次数 -1为无限循环
       # 玩家重新进入服务器后重置循环次数
+      # 默认 -1
       Cycle: -1
       # 重设循环时间
       # 启用时 进入音效范围内优先播放音效后再进入循环延迟
       # 关闭时 是否播放取决于全局延迟 这能距离内使全部玩家都同时播放音效 (如果准备播放时玩家不在区域内 音效不会为该玩家播放)
+      # 默认false
       CycleReset: false
       # 需要能被AudioConfig-Threshold整除的数
       # 循环延迟(固定每多少毫秒播放一次 比音效长度短可能会造成音效重复播放) 小等于0禁用
+      # 默认 0
       CycleDelay: 0
       # 需要能被AudioConfig-Threshold整除的数
       # 音效长度(秒)(暂无用)
+      # 默认 0
       Length: 0
       # 音效量与音高
+      # 默认 1
       Volume: 1
+      # 默认 1
       Pitch: 1
       # 音效触发范围
+      # 0 = 全局音效
+      # 默认 0
       Range: 100
       # 音效淡入淡出效果(仅支持萌芽)
       # 与Enhance冲突
-      FadeIn: 10
+      # 默认 15
+      FadeIn: 15
+      # 默认 20
       FadeOut: 20
       # 增强效果
       # 使音效支持3D效果 仅基础音效种类(圆形距离检测)可用
       # 仅支持单通道的音效文件 双通道没有3D效果
       # 使用的原版音效播放
+      # 默认 true
       Enhance: true
       # 冲突音效 在以下音效播放的时候禁止播放
       Exclude:

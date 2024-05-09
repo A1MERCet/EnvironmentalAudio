@@ -72,9 +72,9 @@ public class AudioData implements IConfig {
     public long length              = 1L;
     public float volume             = 1F;
     public float pitch              = 1F;
-    public int range                = 10000;
-    public int fadeIn               = 30;
-    public int fadeOut              = 30;
+    public int range                = 0;
+    public int fadeIn               = 15;
+    public int fadeOut              = 20;
     public boolean enhance          = false;
     public List<String> exclude     = new ArrayList<>();
     public List<String> mute        = new ArrayList<>();

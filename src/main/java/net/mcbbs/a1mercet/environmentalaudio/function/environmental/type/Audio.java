@@ -123,7 +123,9 @@ public class Audio implements IConfig
     {
         AudioData data = state.getData();
 
-        if(callbackCheck!=null&&!callbackCheck.handle(ps, state))return false;
+        if(!(ps.player.getWorld().equals(state.location.getWorld())))   return false;
+
+        if(callbackCheck!=null&&!callbackCheck.handle(ps, state))       return false;
 
         if(!state.isEnable())
             return false;

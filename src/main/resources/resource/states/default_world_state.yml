@@ -9,6 +9,7 @@ AudioState:
     Audio: default_audio1
     Location: world 0 0 0
     # 可删除 默认音效的配置(AudioData)
+    # 支持选填覆盖
     AudioData:
       Type: 主音效组
       Sound: germmod:test

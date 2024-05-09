@@ -17,9 +17,9 @@ public class GAudioGermStateGui extends GermGuiScreen {
     }
 
     protected void init() {
-        getOptions().setStartX("w/2*-1").setStartY("h*2*-1");
+        getOptions().setStartX("w/2*-1").setStartY("h/2*-1");
 
-        addGuiPart(UtilGerm2K.createColor("color", 0x88FF8000, 0, 0, 2560, 400));
+        addGuiPart(UtilGerm2K.createColor("color", 0x88FF8000, 0, 720-200, 2560, 400));
         addGuiPart(UtilGerm2K.createLabel("name", state.name + "[" + state.id + "]", 1280, 720-90, 25F, GermGuiLabel.Align.CENTER));
         if("DEFAULT".equals(state.audio.type))
             addGuiPart(UtilGerm2K.createTexture("tex", "effect/audio_range.png")
